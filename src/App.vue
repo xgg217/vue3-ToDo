@@ -28,7 +28,7 @@
       <div class="foot">
         <p>总数</p>
         <div class="tj">
-          <button>全部</button>
+          <button :class="[  ]">全部</button>
           <button>待完成</button>
           <button>已完成</button>
         </div>
@@ -73,6 +73,7 @@ export default {
       inpVue: inpVueRef,
       arr: arrRef,
       addArr,
+      
     };
   },
 };
