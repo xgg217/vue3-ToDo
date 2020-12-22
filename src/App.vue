@@ -19,7 +19,7 @@
           <list-com
             :ids="item.ids"
             :title="item.title"
-            :types="item.types"
+            v-model:types="item.types"
           ></list-com>
         </template>
         

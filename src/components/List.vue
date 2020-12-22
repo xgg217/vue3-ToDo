@@ -1,8 +1,8 @@
 <template>
   <li>
     <input type="checkbox" @change="qh">
-    <p>{{ title }}</p>
-    <button>删除</button>
+    <p :class="{ del: types }">{{ title }}</p>
+    <button @click="delList">删除</button>
   </li>
 </template>
 
@@ -14,14 +14,21 @@ export default {
     types: Boolean
   },
 
-  setup(props, ext) {
+  setup(props, ctr) {
     const { types } = props;
-    const qh = () => {
-      emit("")
+    const qh = (event) => {
+      console.log(event.target.checked);
+      console.log(ctr.emit);
+      ctr.emit("update:types", event.target.checked);
+    };
+
+    const delList = () => {
+
     }
 
     return {
-      qh
+      qh,
+      delList
     }
   }
 }
@@ -41,5 +48,10 @@ p {
   width: 170px;
   border: 1px solid red;
   text-align: left;
+}
+
+.del {
+  text-decoration: line-through;
+  color: rgb(129, 127, 127);
 }
 </style>
