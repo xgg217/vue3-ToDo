@@ -9,8 +9,9 @@
         class="nr"
         v-model="inpVue"
         type="text"
+        @keyup.enter="addArr"
         placeholder="请输入任务" />
-      <button @click="addArr" type="button">添加</button>
+      <button @click.enter="addArr" type="button">添加</button>
     </div>
 
     <div class="box">
@@ -27,20 +28,20 @@
       </ul>
 
       <div class="foot">
-        <p>总数</p>
+        <p>总数：{{ arr.length }}</p>
         <div class="tj">
           <button :class="[ showVal === 0 ? 'xs' : '' ]" @click="qh(0)">全部</button>
           <button :class="[ showVal === 1 ? 'xs' : '' ]" @click="qh(1)">待完成</button>
           <button :class="[ showVal === 2 ? 'xs' : '' ]" @click="qh(2)">已完成</button>
         </div>
-        <button >清空</button>
+        <button @click="qk">清空</button>
       </div>
     </div>
   </section>
 </template>
 
 <script>
-import { ref, reactive, computed } from "vue";
+import { ref, reactive, computed, watchEffect } from "vue";
 import { getRandomIntInclusive } from "./ulits/index.js";
 import Lists from "./components/List.vue";
 export default {
@@ -67,6 +68,10 @@ export default {
 
     // 添加内容
     const addArr = () => {
+      if(!inpVueRef.value.trim()) {
+        return
+      }
+      console.log(111);
       const obj = useAddObj(inpVueRef.value);
       inpVueRef.value = "";
       arrRef.value.push(obj);
@@ -104,9 +109,32 @@ export default {
       }
     });
 
+    // 过滤删除的内容
+    watchEffect(
+      () => {
+        const aa = comArrRef.value.filter(item => {
+          if(item.isBool) {
+            return false
+          }
+          return true
+        })
+        console.log(aa);
+        comArrRef.value = aa;
+
+      },{
+      onTrigger(e) {
+        debugger
+      }
+    })
+
     // 切换状态
     const qh = (state) => {
       showValRef.value = state;
+    };
+
+    // 清空
+    const qk = () => {
+      arrRef.value = [];
     };
 
 
@@ -116,7 +144,8 @@ export default {
       addArr,
       arr: comArrRef,
       showVal: showValRef,
-      qh
+      qh,
+      qk
     };
   },
 };
