@@ -19,6 +19,7 @@
           <list-com
             :ids="item.ids"
             :title="item.title"
+            v-model:isBool="item.isBool"
             v-model:types="item.types"
           ></list-com>
         </template>
@@ -28,18 +29,18 @@
       <div class="foot">
         <p>总数</p>
         <div class="tj">
-          <button :class="[  ]">全部</button>
-          <button>待完成</button>
-          <button>已完成</button>
+          <button :class="[ showVal === 0 ? 'xs' : '' ]" @click="qh(0)">全部</button>
+          <button :class="[ showVal === 1 ? 'xs' : '' ]" @click="qh(1)">待完成</button>
+          <button :class="[ showVal === 2 ? 'xs' : '' ]" @click="qh(2)">已完成</button>
         </div>
-        <button>清空</button>
+        <button >清空</button>
       </div>
     </div>
   </section>
 </template>
 
 <script>
-import { ref, readonly, reactive, toRef } from "vue";
+import { ref, reactive, computed } from "vue";
 import { getRandomIntInclusive } from "./ulits/index.js";
 import Lists from "./components/List.vue";
 export default {
@@ -52,12 +53,14 @@ export default {
   setup() {
     let inpVueRef = ref("");
     let arrRef = ref([]);
+    let showValRef = ref(0);
 
     const useAddObj = (value) => {
       const obj = reactive({
         ids: getRandomIntInclusive(1, 1000),
         title: value,
-        types: false
+        types: false, // 是否完成
+        isBool: false, // 是否删除
       });
       return obj
     }
@@ -69,11 +72,51 @@ export default {
       arrRef.value.push(obj);
     };
 
+    // 根据状态显示内容
+    const comArrRef = computed(() => {
+      console.log(12);
+      // 显示全部
+      if(showValRef.value === 0) {
+        console.log("显示全部");
+        return arrRef.value
+      }
+
+      // 待完成
+      if(showValRef.value === 1) {
+        console.log("待完成");
+        return arrRef.value.filter(item => {
+          if(item.types) {
+            return false
+          }
+          return true
+        })
+      }
+
+      // 已完成
+      if(showValRef.value === 2) {
+        console.log("已完成");
+        return arrRef.value.filter(item => {
+          if(item.types) {
+            return true
+          }
+          return false
+        })
+      }
+    });
+
+    // 切换状态
+    const qh = (state) => {
+      showValRef.value = state;
+    };
+
+
+
     return {
       inpVue: inpVueRef,
-      arr: arrRef,
       addArr,
-      
+      arr: comArrRef,
+      showVal: showValRef,
+      qh
     };
   },
 };
@@ -107,5 +150,9 @@ section {
 
 .foot .tj button {
   margin-right: 5px;
+}
+
+.xs {
+  background-color: red;
 }
 </style>

@@ -11,7 +11,8 @@ export default {
   props: {
     ids: [String, Number],
     title: String,
-    types: Boolean
+    types: Boolean,
+    isBool: Boolean,
   },
 
   setup(props, ctr) {
@@ -23,7 +24,7 @@ export default {
     };
 
     const delList = () => {
-
+      ctr.emit("update:isBool", true);
     }
 
     return {
